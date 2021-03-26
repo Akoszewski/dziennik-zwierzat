@@ -28,33 +28,6 @@ class User {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final Future<Database> database = openDatabase(join(await getDatabasesPath(), 'user.db'),
-    onCreate: (db, version) {
-      return db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
-    },
-    version: 1);
-  Future<void> insertUser(User user) async {
-    final Database db = await database;
-    await db.insert(
-      'users',
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-  Future<List<User>> users() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('users');
-    return List.generate(maps.length, (i) {
-      return User(
-        id: maps[i]['id'],
-        login: maps[i]['login'],
-        pass: maps[i]['pass'],
-      );
-    });
-  }
-  await insertUser(User(id: 0, login: 'user1', pass: 'Haslo123'));
-  print(await users());
-  print("asdf");
   runApp(MyApp());
 }
 
@@ -85,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   WebViewController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +69,35 @@ class _MyHomePageState extends State<MyHomePage> {
         javascriptChannels: Set.from([
           JavascriptChannel(
               name: 'messageHandler',
-              onMessageReceived: (JavascriptMessage message) {
+              onMessageReceived: (JavascriptMessage message) async {
+                final Future<Database> database = openDatabase(join(await getDatabasesPath(), 'user.db'),
+                  onCreate: (db, version) {
+                    return db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
+                  },
+                  version: 1);
+                Future<void> insertUser(User user) async {
+                  final Database db = await database;
+                  await db.insert(
+                    'users',
+                    user.toMap(),
+                    conflictAlgorithm: ConflictAlgorithm.replace,
+                  );
+                }
+                Future<List<User>> users() async {
+                  final Database db = await database;
+                  final List<Map<String, dynamic>> maps = await db.query('users');
+                  return List.generate(maps.length, (i) {
+                    return User(
+                      id: maps[i]['id'],
+                      login: maps[i]['login'],
+                      pass: maps[i]['pass'],
+                    );
+                  });
+                }
                 print(message.message);
                 var credentials = message.message.split(";");
-                //await insertUser(User(id: 0, login: 'user1', pass: 'Haslo123'));
+                await insertUser(User(id: 0, login: credentials[0], pass: credentials[1]));
+                print(await users());
               })
         ]),
         onWebViewCreated: (WebViewController webviewController) {
