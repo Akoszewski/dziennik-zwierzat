@@ -25,6 +25,8 @@ dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.8.0
   webview_flutter: ^1.0.7
+  sqflite:
+  path:
 
 
   # The following adds the Cupertino Icons font to your application.

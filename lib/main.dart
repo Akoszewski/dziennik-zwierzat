@@ -3,8 +3,58 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:flutter/widgets.dart';
 
-void main() {
+class User {
+  final int id;
+  final String login;
+  final String pass;
+  User({this.id, this.login, this.pass});
+  Map<String, dynamic> toMap() {
+    return 
+    {
+      'id': id,
+      'login': login,
+      'pass': pass,
+    };
+  }
+  @override
+  String toString() {
+    return 'User{id: $id, login: $login, pass: $pass}';
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final Future<Database> database = openDatabase(join(await getDatabasesPath(), 'user.db'),
+    onCreate: (db, version) {
+      return db.execute("CREATE TABLE users(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
+    },
+    version: 1);
+  Future<void> insertUser(User user) async {
+    final Database db = await database;
+    await db.insert(
+      'users',
+      user.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future<List<User>> users() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return List.generate(maps.length, (i) {
+      return User(
+        id: maps[i]['id'],
+        login: maps[i]['login'],
+        pass: maps[i]['pass'],
+      );
+    });
+  }
+  await insertUser(User(id: 0, login: 'user1', pass: 'Haslo123'));
+  print(await users());
+  print("asdf");
   runApp(MyApp());
 }
 
@@ -39,7 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Webview')),
       body: WebView(
         initialUrl: 'https://dziennikhodowlany.pl/admin/users/login',
         javascriptMode: JavascriptMode.unrestricted,
@@ -48,6 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
               name: 'messageHandler',
               onMessageReceived: (JavascriptMessage message) {
                 print(message.message);
+                var credentials = message.message.split(";");
+                //await insertUser(User(id: 0, login: 'user1', pass: 'Haslo123'));
               })
         ]),
         onWebViewCreated: (WebViewController webviewController) {
@@ -55,8 +106,10 @@ class _MyHomePageState extends State<MyHomePage> {
           //_loadHtmlFromAssets();
         },
         onPageFinished: (String url) {
-          _controller.evaluateJavascript('document.getElementById("username").value = "akoszews@gmail.com"');
-          _controller.evaluateJavascript('document.getElementById("password").value = "Haslo123"');
+          String login = "akoszews@gmail.com";
+          String pass = "Haslo123";
+          _controller.evaluateJavascript('document.getElementById("username").value = "$login"');
+          _controller.evaluateJavascript('document.getElementById("password").value = "$pass"');
           _controller.evaluateJavascript('''document.getElementsByClassName("buttonlogin")[0].onclick =
                                               function() {
                                                 var login = document.getElementById("username").value
