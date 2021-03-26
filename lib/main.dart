@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
@@ -45,6 +44,25 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Menu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Second Route"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Navigate back to first route when tapped.
+          },
+          child: Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -59,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   WebViewController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String loginUrl = 'https://dziennikhodowlany.pl/admin/users/login';
+  String indexUrl = "https://dziennikhodowlany.pl/admin/animals/index";
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //_loadHtmlFromAssets();
         },
         onPageFinished: (String url) async {
-          if (url == loginUrl) {
+          if (url.contains(loginUrl)) {
             String login = "akoszews@gmail.com";
             String pass = "Haslo123";
             _controller.evaluateJavascript('document.getElementById("username").value = "$login"');
@@ -117,6 +136,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   messageHandler.postMessage(login+";"+pass);
                                                 }
                                                 ''');
+          }
+          else if (url.contains(indexUrl)) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Menu()),
+            );
           }
         }
       ),
