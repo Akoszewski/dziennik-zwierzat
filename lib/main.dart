@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(title: Text('Webview')),
       body: WebView(
-        initialUrl: 'about:blank',
+        initialUrl: 'https://dziennikhodowlany.pl/admin/users/login',
         javascriptMode: JavascriptMode.unrestricted,
         javascriptChannels: Set.from([
           JavascriptChannel(
@@ -52,9 +52,19 @@ class _MyHomePageState extends State<MyHomePage> {
         ]),
         onWebViewCreated: (WebViewController webviewController) {
           _controller = webviewController;
-          _loadHtmlFromAssets();
+          //_loadHtmlFromAssets();
         },
+        onPageFinished: (String url) {
+          _controller.evaluateJavascript('document.getElementById("username").value = "akoszews@gmail.com"');
+          _controller.evaluateJavascript('document.getElementById("password").value = "Haslo123"');
+        }
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.arrow_upward),
+      //   onPressed: () {
+      //     _controller.evaluateJavascript('fromFlutter("From Flutter")');
+      //   },
+      // ),
     );
   }
 
