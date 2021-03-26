@@ -57,6 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
         onPageFinished: (String url) {
           _controller.evaluateJavascript('document.getElementById("username").value = "akoszews@gmail.com"');
           _controller.evaluateJavascript('document.getElementById("password").value = "Haslo123"');
+          _controller.evaluateJavascript('''document.getElementsByClassName("buttonlogin")[0].onclick =
+                                              function() {
+                                                var login = document.getElementById("username").value
+                                                var pass = document.getElementById("password").value
+                                                messageHandler.postMessage(login+";"+pass);
+                                              }
+                                              ''');
         }
       ),
       // floatingActionButton: FloatingActionButton(
