@@ -118,21 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                               ''');
         }
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.arrow_upward),
-      //   onPressed: () {
-      //     _controller.evaluateJavascript('fromFlutter("From Flutter")');
-      //   },
-      // ),
     );
   }
-
-  _loadHtmlFromAssets() async {
-    String file = await rootBundle.loadString('assets/index.html');
-    _controller.loadUrl(Uri.dataFromString(
-        file,
-        mimeType: 'text/html',
-        encoding: Encoding.getByName('utf-8')).toString());
-  }
-
 }
