@@ -47,16 +47,21 @@ class MyApp extends StatelessWidget {
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Navigate back to first route when tapped.
-          },
-          child: Text('Go back!'),
+    return WillPopScope(
+      onWillPop: () async {
+        return;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Second Route"),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigate back to first route when tapped.
+            },
+            child: Text('Go back!'),
+          ),
         ),
       ),
     );
