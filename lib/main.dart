@@ -58,13 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   WebViewController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  
+  String loginUrl = 'https://dziennikhodowlany.pl/admin/users/login';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: WebView(
-        initialUrl: 'https://dziennikhodowlany.pl/admin/users/login',
+        initialUrl: loginUrl,
         javascriptMode: JavascriptMode.unrestricted,
         javascriptChannels: Set.from([
           JavascriptChannel(
@@ -104,18 +104,20 @@ class _MyHomePageState extends State<MyHomePage> {
           _controller = webviewController;
           //_loadHtmlFromAssets();
         },
-        onPageFinished: (String url) {
-          String login = "akoszews@gmail.com";
-          String pass = "Haslo123";
-          _controller.evaluateJavascript('document.getElementById("username").value = "$login"');
-          _controller.evaluateJavascript('document.getElementById("password").value = "$pass"');
-          _controller.evaluateJavascript('''document.getElementsByClassName("buttonlogin")[0].onclick =
-                                              function() {
-                                                var login = document.getElementById("username").value
-                                                var pass = document.getElementById("password").value
-                                                messageHandler.postMessage(login+";"+pass);
-                                              }
-                                              ''');
+        onPageFinished: (String url) async {
+          if (url == loginUrl) {
+            String login = "akoszews@gmail.com";
+            String pass = "Haslo123";
+            _controller.evaluateJavascript('document.getElementById("username").value = "$login"');
+            _controller.evaluateJavascript('document.getElementById("password").value = "$pass"');
+            _controller.evaluateJavascript('''document.getElementsByClassName("buttonlogin")[0].onclick =
+                                                function() {
+                                                  var login = document.getElementById("username").value
+                                                  var pass = document.getElementById("password").value
+                                                  messageHandler.postMessage(login+";"+pass);
+                                                }
+                                                ''');
+          }
         }
       ),
     );
