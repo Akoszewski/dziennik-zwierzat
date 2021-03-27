@@ -62,14 +62,69 @@ class Menu extends StatelessWidget {
       },
       child: Scaffold(
         body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Index()),
-              );
-            },
-            child: Text('Button'),
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                                top: 100,
+                left: 100,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Index()),
+                    );
+                  },
+                  child: Text('Moje konto'),
+                ),
+              ),
+              Positioned(
+                top: 200,
+                left: 100,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Pomiary()),
+                    );
+                  },
+                  child: Text('Pomiary'),
+                ),
+              ),
+              Positioned(
+                                top: 300,
+                left: 100,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Wylinki()),
+                    );
+                  },
+                  child: Text('Wylinki'),
+                ),
+              ),
+              Positioned(
+                                top: 400,
+                left: 100,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Karmienie()),
+                    );
+                  },
+                  child: Text('Karmienie'),
+                ),
+              ),
+              Positioned(
+                                top: 500,
+                left: 100,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text('Wyloguj'),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -84,6 +139,45 @@ class Index extends StatelessWidget {
       body: Center(
         child: WebView(
           initialUrl: indexUrl,
+        ),
+      ),
+    );
+  }
+}
+
+class Pomiary extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: WebView(
+          initialUrl: "https://dziennikhodowlany.pl/admin/measurements/add",
+        ),
+      ),
+    );
+  }
+}
+
+class Wylinki extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: WebView(
+          initialUrl: "https://dziennikhodowlany.pl/admin/old-skins/add",
+        ),
+      ),
+    );
+  }
+}
+
+class Karmienie extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: WebView(
+          initialUrl: "https://dziennikhodowlany.pl/admin/feedings/add",
         ),
       ),
     );
