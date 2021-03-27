@@ -56,6 +56,10 @@ class MyApp extends StatelessWidget {
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double buttonHeight = 0.1015 * screenHeight;
+
     return WillPopScope(
       onWillPop: () async {
         return;
@@ -67,7 +71,7 @@ class Menu extends StatelessWidget {
               Positioned(
                 top: 100,
                 left: 100,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -80,10 +84,15 @@ class Menu extends StatelessWidget {
               Positioned(
                 top: 200,
                 left: 100,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () async {
-                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#0000ff", "Anuluj", true, null);
-                    String urlToGo = "https://dziennikhodowlany.pl/admin/measurements/add?animal_id=" + barcodeScanRes + "&mobile_ver";
+                    String barcodeScanRes =
+                        await FlutterBarcodeScanner.scanBarcode(
+                            "#0000ff", "Anuluj", true, null);
+                    String urlToGo =
+                        "https://dziennikhodowlany.pl/admin/measurements/add?animal_id=" +
+                            barcodeScanRes +
+                            "&mobile_ver";
                     if (barcodeScanRes != "-1") {
                       print("Scanning result: " + barcodeScanRes);
                       Navigator.push(
@@ -99,9 +108,22 @@ class Menu extends StatelessWidget {
                 top: 300,
                 left: 100,
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        //side: BorderSide(color: Colors.red),
+                      ),
+                    ),
+                  ),
                   onPressed: () async {
-                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#0000ff", "Anuluj", true, null);
-                    String urlToGo = "https://dziennikhodowlany.pl/admin/old-skins/add?animal_id=" + barcodeScanRes + "&mobile_ver";
+                    String barcodeScanRes =
+                        await FlutterBarcodeScanner.scanBarcode(
+                            "#0000ff", "Anuluj", true, null);
+                    String urlToGo =
+                        "https://dziennikhodowlany.pl/admin/old-skins/add?animal_id=" +
+                            barcodeScanRes +
+                            "&mobile_ver";
                     if (barcodeScanRes != "-1") {
                       print("Scanning result: " + barcodeScanRes);
                       Navigator.push(
@@ -116,10 +138,15 @@ class Menu extends StatelessWidget {
               Positioned(
                 top: 400,
                 left: 100,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () async {
-                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#0000ff", "Anuluj", true, null);
-                    String urlToGo = "https://dziennikhodowlany.pl/admin/feedings/add?animal_id=" + barcodeScanRes + "&mobile_ver";
+                    String barcodeScanRes =
+                        await FlutterBarcodeScanner.scanBarcode(
+                            "#0000ff", "Anuluj", true, null);
+                    String urlToGo =
+                        "https://dziennikhodowlany.pl/admin/feedings/add?animal_id=" +
+                            barcodeScanRes +
+                            "&mobile_ver";
                     if (barcodeScanRes != "-1") {
                       print("Scanning result: " + barcodeScanRes);
                       Navigator.push(
@@ -134,7 +161,7 @@ class Menu extends StatelessWidget {
               Positioned(
                 top: 500,
                 left: 100,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () async {
                     Phoenix.rebirth(context);
                   },
@@ -222,6 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 });
               }
+
               var userList = await users();
               String login = "";
               String pass = "";
