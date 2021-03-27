@@ -6,6 +6,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 
+// Color bgColor = Color(0x373c42);
+// Color buttonColor = Color(0x4a4f55);
+// Color logoutButtonColor = Color(0x3f424c);
+
+Color bgColor = Colors.grey[850];
+Color buttonColor = Colors.grey[700];
+Color logoutButtonColor = Color(0x3f424c);
+
 class User {
   final int id;
   final String login;
@@ -53,7 +61,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Menu extends StatelessWidget {
+class AppButton extends StatelessWidget {
+  AppButton({this.label, this.top, this.imgPath, @required this.onPressed});
+  final GestureTapCallback onPressed;
+  final double top;
+  final String imgPath;
+  final String label;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -61,14 +74,52 @@ class Menu extends StatelessWidget {
     double buttonHeight = 0.1015 * screenHeight;
     double btnMargin = 20;
 
-    // Color bgColor = Color(0x373c42);
-    // Color buttonColor = Color(0x4a4f55);
-    // Color logoutButtonColor = Color(0x3f424c);
+    return Positioned(
+      left: btnMargin,
+      top: this.top,
+      child: ConstrainedBox(
+        constraints: BoxConstraints.tightFor(
+            width: screenWidth - 2 * btnMargin, height: buttonHeight),
+        child: ElevatedButton.icon(
+          onPressed: this.onPressed,
+          icon: Image.asset(this.imgPath,
+              height: 20, width: 20, color: Colors.white),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                //side: BorderSide(color: Colors.red),
+              ),
+            ),
+          ),
+          label: Text(this.label),
+        ),
+      ),
+    );
+  }
+}
 
-    Color bgColor = Colors.grey[850];
-    Color buttonColor = Colors.grey[700];
-    Color logoutButtonColor = Color(0x3f424c);
+class Menu extends StatelessWidget {
+  Future<void> scanQr(BuildContext context, String pagename) async {
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        "#0000ff", "Anuluj", true, null);
+    String urlToGo = "https://dziennikhodowlany.pl/admin/" +
+        pagename +
+        "/old-skins/add?animal_id=" +
+        barcodeScanRes +
+        "&mobile_ver";
+    if (barcodeScanRes != "-1") {
+      print("Scanning result: " + barcodeScanRes);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Index(urlToGo)),
+      );
+    }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         return;
@@ -78,113 +129,48 @@ class Menu extends StatelessWidget {
         body: Center(
           child: Stack(
             children: <Widget>[
-              Positioned(
+              AppButton(
                 top: 100,
-                left: 100,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Index(indexUrl)),
-                    );
-                  },
-                  child: Text('Moje konto'),
-                ),
+                label: "Moje konto",
+                imgPath: "./assets/img/icon1.png",
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Index(indexUrl)),
+                  );
+                },
               ),
-              Positioned(
+              AppButton(
                 top: 200,
-                left: 100,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    String barcodeScanRes =
-                        await FlutterBarcodeScanner.scanBarcode(
-                            "#0000ff", "Anuluj", true, null);
-                    String urlToGo =
-                        "https://dziennikhodowlany.pl/admin/measurements/add?animal_id=" +
-                            barcodeScanRes +
-                            "&mobile_ver";
-                    if (barcodeScanRes != "-1") {
-                      print("Scanning result: " + barcodeScanRes);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Index(urlToGo)),
-                      );
-                    }
-                  },
-                  child: Text('Pomiary'),
-                ),
+                label: "Pomiary",
+                imgPath: "./assets/img/icon2.png",
+                onPressed: () async {
+                  await scanQr(context, "measurements");
+                },
               ),
-              Positioned(
+              AppButton(
                 top: 300,
-                left: btnMargin,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(
-                      width: screenWidth - 2 * btnMargin, height: buttonHeight),
-                  child: ElevatedButton.icon(
-                    icon: Image.asset('./assets/img/icon1.png', height: 20, width: 20, color: Colors.white),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(buttonColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          //side: BorderSide(color: Colors.red),
-                        ),
-                      ),
-                    ),
-                    onPressed: () async {
-                      String barcodeScanRes =
-                          await FlutterBarcodeScanner.scanBarcode(
-                              "#0000ff", "Anuluj", true, null);
-                      String urlToGo =
-                          "https://dziennikhodowlany.pl/admin/old-skins/add?animal_id=" +
-                              barcodeScanRes +
-                              "&mobile_ver";
-                      if (barcodeScanRes != "-1") {
-                        print("Scanning result: " + barcodeScanRes);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Index(urlToGo)),
-                        );
-                      }
-                    },
-                    label: Text('Wylinki'),
-                  ),
-                ),
+                label: "Wylinki",
+                imgPath: "./assets/img/icon3.png",
+                onPressed: () async {
+                  await scanQr(context, "old-skins");
+                },
               ),
-              Positioned(
+              AppButton(
                 top: 400,
-                left: 100,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    String barcodeScanRes =
-                        await FlutterBarcodeScanner.scanBarcode(
-                            "#0000ff", "Anuluj", true, null);
-                    String urlToGo =
-                        "https://dziennikhodowlany.pl/admin/feedings/add?animal_id=" +
-                            barcodeScanRes +
-                            "&mobile_ver";
-                    if (barcodeScanRes != "-1") {
-                      print("Scanning result: " + barcodeScanRes);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Index(urlToGo)),
-                      );
-                    }
-                  },
-                  child: Text('Karmienie'),
-                ),
+                label: "Karmienie",
+                imgPath: "./assets/img/icon4.png",
+                onPressed: () async {
+                  await scanQr(context, "old-skins");
+                },
               ),
-              Positioned(
+              AppButton(
                 top: 500,
-                left: 100,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    Phoenix.rebirth(context);
-                  },
-                  child: Text('Wyloguj'),
-                ),
+                label: "Wyloguj",
+                imgPath: "./assets/img/icon5.png",
+                onPressed: () async {
+                  Phoenix.rebirth(context);
+                },
               ),
             ],
           ),
