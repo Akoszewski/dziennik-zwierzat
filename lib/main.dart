@@ -45,9 +45,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Communication Bridge',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          // primaryColor: buttonColor,
+          // primarySwatch: buttonColor,
+          visualDensity: VisualDensity.adaptivePlatformDensity),
       home: MyHomePage(title: 'Native - JS Communication Bridge'),
     );
   }
@@ -59,12 +59,22 @@ class Menu extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double buttonHeight = 0.1015 * screenHeight;
+    double btnMargin = 20;
+
+    // Color bgColor = Color(0x373c42);
+    // Color buttonColor = Color(0x4a4f55);
+    // Color logoutButtonColor = Color(0x3f424c);
+
+    Color bgColor = Colors.grey[850];
+    Color buttonColor = Colors.grey[700];
+    Color logoutButtonColor = Color(0x3f424c);
 
     return WillPopScope(
       onWillPop: () async {
         return;
       },
       child: Scaffold(
+        backgroundColor: bgColor,
         body: Center(
           child: Stack(
             children: <Widget>[
@@ -84,7 +94,7 @@ class Menu extends StatelessWidget {
               Positioned(
                 top: 200,
                 left: 100,
-                child: TextButton(
+                child: ElevatedButton(
                   onPressed: () async {
                     String barcodeScanRes =
                         await FlutterBarcodeScanner.scanBarcode(
@@ -106,39 +116,47 @@ class Menu extends StatelessWidget {
               ),
               Positioned(
                 top: 300,
-                left: 100,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        //side: BorderSide(color: Colors.red),
+                left: btnMargin,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints.tightFor(
+                      width: screenWidth - 2 * btnMargin, height: buttonHeight),
+                  child: ElevatedButton.icon(
+                    icon: Image.asset('./assets/img/icon1.png', height: 20, width: 20, color: Colors.white),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(buttonColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          //side: BorderSide(color: Colors.red),
+                        ),
                       ),
                     ),
+                    onPressed: () async {
+                      String barcodeScanRes =
+                          await FlutterBarcodeScanner.scanBarcode(
+                              "#0000ff", "Anuluj", true, null);
+                      String urlToGo =
+                          "https://dziennikhodowlany.pl/admin/old-skins/add?animal_id=" +
+                              barcodeScanRes +
+                              "&mobile_ver";
+                      if (barcodeScanRes != "-1") {
+                        print("Scanning result: " + barcodeScanRes);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Index(urlToGo)),
+                        );
+                      }
+                    },
+                    label: Text('Wylinki'),
                   ),
-                  onPressed: () async {
-                    String barcodeScanRes =
-                        await FlutterBarcodeScanner.scanBarcode(
-                            "#0000ff", "Anuluj", true, null);
-                    String urlToGo =
-                        "https://dziennikhodowlany.pl/admin/old-skins/add?animal_id=" +
-                            barcodeScanRes +
-                            "&mobile_ver";
-                    if (barcodeScanRes != "-1") {
-                      print("Scanning result: " + barcodeScanRes);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Index(urlToGo)),
-                      );
-                    }
-                  },
-                  child: Text('Wylinki'),
                 ),
               ),
               Positioned(
                 top: 400,
                 left: 100,
-                child: TextButton(
+                child: ElevatedButton(
                   onPressed: () async {
                     String barcodeScanRes =
                         await FlutterBarcodeScanner.scanBarcode(
@@ -161,7 +179,7 @@ class Menu extends StatelessWidget {
               Positioned(
                 top: 500,
                 left: 100,
-                child: TextButton(
+                child: ElevatedButton(
                   onPressed: () async {
                     Phoenix.rebirth(context);
                   },
