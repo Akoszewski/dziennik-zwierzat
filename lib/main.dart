@@ -26,6 +26,8 @@ class User {
 }
 
 Future<Database> database;
+String loginUrl = 'https://dziennikhodowlany.pl/admin/users/login';
+String indexUrl = "https://dziennikhodowlany.pl/admin/animals/index";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,16 +61,29 @@ class Menu extends StatelessWidget {
         return;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Second Route"),
-        ),
         body: Center(
           child: ElevatedButton(
             onPressed: () {
-              // Navigate back to first route when tapped.
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Index()),
+              );
             },
-            child: Text('Go back!'),
+            child: Text('Button'),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class Index extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: WebView(
+          initialUrl: indexUrl,
         ),
       ),
     );
@@ -87,8 +102,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   WebViewController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String loginUrl = 'https://dziennikhodowlany.pl/admin/users/login';
-  String indexUrl = "https://dziennikhodowlany.pl/admin/animals/index";
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 });
               }
+
               var userList = await users();
               var cred = userList[0];
               String login = cred.login;
