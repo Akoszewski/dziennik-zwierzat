@@ -5,6 +5,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class User {
   final int id;
@@ -81,11 +82,16 @@ class Menu extends StatelessWidget {
                 top: 200,
                 left: 100,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Pomiary()),
-                    );
+                  onPressed: () async {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Pomiary()),
+                    // );
+                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+                                                    "#0000ff",
+                                                    "Anuluj", 
+                                                    true, 
+                                                    null);
                   },
                   child: Text('Pomiary'),
                 ),
@@ -216,13 +222,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       conflictAlgorithm: ConflictAlgorithm.replace,
                     );
                   }
-
                   print(message.message);
                   var credentials = message.message.split(";");
                   print("Credentials: " + credentials.toString());
                   await insertUser(
-                      //User(id: 0, login: credentials[0], pass: credentials[1]));
-                      User(id: 0, login: "akoszews", pass: "Haslo123"));
+                      User(id: 0, login: credentials[0], pass: credentials[1]));
                 })
           ]),
           onWebViewCreated: (WebViewController webviewController) {
