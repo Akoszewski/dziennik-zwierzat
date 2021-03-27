@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class User {
   final int id;
@@ -37,7 +36,7 @@ void main() async {
     return db.execute(
         "CREATE TABLE users(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
   }, version: 1);
-  runApp(MyApp());
+  runApp(Phoenix(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -136,7 +135,9 @@ class Menu extends StatelessWidget {
                 top: 500,
                 left: 100,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    Phoenix.rebirth(context);
+                  },
                   child: Text('Wyloguj'),
                 ),
               ),
@@ -158,45 +159,6 @@ class Index extends StatelessWidget {
       body: Center(
         child: WebView(
           initialUrl: url,
-        ),
-      ),
-    );
-  }
-}
-
-class Pomiary extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: WebView(
-          initialUrl: "https://dziennikhodowlany.pl/admin/measurements/add",
-        ),
-      ),
-    );
-  }
-}
-
-class Wylinki extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: WebView(
-          initialUrl: "https://dziennikhodowlany.pl/admin/old-skins/add",
-        ),
-      ),
-    );
-  }
-}
-
-class Karmienie extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: WebView(
-          initialUrl: "https://dziennikhodowlany.pl/admin/feedings/add",
         ),
       ),
     );
@@ -248,9 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
             //_loadHtmlFromAssets();
           },
           onPageFinished: (String url) async {
-            print("Url: " + url);
             if (url == loginUrl) {
-              print("Url2: " + url);
               Future<List<User>> users() async {
                 final Database db = await database;
                 final List<Map<String, dynamic>> maps = await db.query('users');
@@ -262,8 +222,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 });
               }
-
-              print("Url3: " + url);
               var userList = await users();
               String login = "";
               String pass = "";
@@ -282,7 +240,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     var login = document.getElementById("username").value
                                                     var pass = document.getElementById("password").value
                                                     messageHandler.postMessage(login+";"+pass);
-
                                                   }
                                                   ''');
             } else if (url.contains(indexUrl)) {
