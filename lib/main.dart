@@ -72,7 +72,7 @@ class Menu extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Index()),
+                      MaterialPageRoute(builder: (context) => Index(indexUrl)),
                     );
                   },
                   child: Text('Moje konto'),
@@ -83,15 +83,15 @@ class Menu extends StatelessWidget {
                 left: 100,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => Pomiary()),
-                    // );
-                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-                                                    "#0000ff",
-                                                    "Anuluj", 
-                                                    true, 
-                                                    null);
+                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#0000ff", "Anuluj", true, null);
+                    String urlToGo = "https://dziennikhodowlany.pl/admin/measurements/add?animal_id=" + barcodeScanRes + "&mobile_ver";
+                    if (barcodeScanRes != "-1") {
+                      print("Scanning result: " + barcodeScanRes);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Index(urlToGo)),
+                      );
+                    }
                   },
                   child: Text('Pomiary'),
                 ),
@@ -100,11 +100,16 @@ class Menu extends StatelessWidget {
                 top: 300,
                 left: 100,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Wylinki()),
-                    );
+                  onPressed: () async {
+                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#0000ff", "Anuluj", true, null);
+                    String urlToGo = "https://dziennikhodowlany.pl/admin/old-skins/add?animal_id=" + barcodeScanRes + "&mobile_ver";
+                    if (barcodeScanRes != "-1") {
+                      print("Scanning result: " + barcodeScanRes);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Index(urlToGo)),
+                      );
+                    }
                   },
                   child: Text('Wylinki'),
                 ),
@@ -113,11 +118,16 @@ class Menu extends StatelessWidget {
                 top: 400,
                 left: 100,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Karmienie()),
-                    );
+                  onPressed: () async {
+                    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#0000ff", "Anuluj", true, null);
+                    String urlToGo = "https://dziennikhodowlany.pl/admin/feedings/add?animal_id=" + barcodeScanRes + "&mobile_ver";
+                    if (barcodeScanRes != "-1") {
+                      print("Scanning result: " + barcodeScanRes);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Index(urlToGo)),
+                      );
+                    }
                   },
                   child: Text('Karmienie'),
                 ),
@@ -139,12 +149,15 @@ class Menu extends StatelessWidget {
 }
 
 class Index extends StatelessWidget {
+  Index(this.url);
+  final String url;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: WebView(
-          initialUrl: indexUrl,
+          initialUrl: url,
         ),
       ),
     );
@@ -222,6 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       conflictAlgorithm: ConflictAlgorithm.replace,
                     );
                   }
+
                   print(message.message);
                   var credentials = message.message.split(";");
                   print("Credentials: " + credentials.toString());
