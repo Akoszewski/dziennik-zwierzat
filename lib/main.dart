@@ -65,7 +65,7 @@ class Menu extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Positioned(
-                                top: 100,
+                top: 100,
                 left: 100,
                 child: ElevatedButton(
                   onPressed: () {
@@ -91,7 +91,7 @@ class Menu extends StatelessWidget {
                 ),
               ),
               Positioned(
-                                top: 300,
+                top: 300,
                 left: 100,
                 child: ElevatedButton(
                   onPressed: () {
@@ -104,7 +104,7 @@ class Menu extends StatelessWidget {
                 ),
               ),
               Positioned(
-                                top: 400,
+                top: 400,
                 left: 100,
                 child: ElevatedButton(
                   onPressed: () {
@@ -117,7 +117,7 @@ class Menu extends StatelessWidget {
                 ),
               ),
               Positioned(
-                                top: 500,
+                top: 500,
                 left: 100,
                 child: ElevatedButton(
                   onPressed: () {},
@@ -219,8 +219,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   print(message.message);
                   var credentials = message.message.split(";");
+                  print("Credentials: " + credentials.toString());
                   await insertUser(
-                      User(id: 0, login: credentials[0], pass: credentials[1]));
+                      //User(id: 0, login: credentials[0], pass: credentials[1]));
+                      User(id: 0, login: "akoszews", pass: "Haslo123"));
                 })
           ]),
           onWebViewCreated: (WebViewController webviewController) {
@@ -228,7 +230,9 @@ class _MyHomePageState extends State<MyHomePage> {
             //_loadHtmlFromAssets();
           },
           onPageFinished: (String url) async {
+            print("Url: " + url);
             if (url == loginUrl) {
+              print("Url2: " + url);
               Future<List<User>> users() async {
                 final Database db = await database;
                 final List<Map<String, dynamic>> maps = await db.query('users');
@@ -241,22 +245,28 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               }
 
+              print("Url3: " + url);
               var userList = await users();
-              var cred = userList[0];
-              String login = cred.login;
-              String pass = cred.pass;
+              String login = "";
+              String pass = "";
+              if (userList.length > 0) {
+                var cred = userList[0];
+                login = cred.login;
+                pass = cred.pass;
+              }
               _controller.evaluateJavascript(
                   'document.getElementById("username").value = "$login"');
               _controller.evaluateJavascript(
                   'document.getElementById("password").value = "$pass"');
               _controller.evaluateJavascript(
                   '''document.getElementsByClassName("buttonlogin")[0].onclick =
-                                                function() {
-                                                  var login = document.getElementById("username").value
-                                                  var pass = document.getElementById("password").value
-                                                  messageHandler.postMessage(login+";"+pass);
-                                                }
-                                                ''');
+                                                  function() {
+                                                    var login = document.getElementById("username").value
+                                                    var pass = document.getElementById("password").value
+                                                    messageHandler.postMessage(login+";"+pass);
+
+                                                  }
+                                                  ''');
             } else if (url.contains(indexUrl)) {
               Navigator.push(
                 context,
