@@ -14,6 +14,25 @@ Color bgColor = Colors.grey[850];
 Color buttonColor = Colors.grey[700];
 Color logoutButtonColor = Color(0x3f424c);
 
+double getScreenWidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
+
+double getScreenHeight(BuildContext context) {
+  return MediaQuery.of(context).size.height;
+}
+
+double getButtonHeight(BuildContext context) {
+  return 0.1015 * getScreenHeight(context);
+}
+
+double getFontSize(BuildContext context) {
+  return 0.0318 * getScreenHeight(context);
+}
+
+double sideMargin = 20;
+double statusBarHeight = 24;
+
 class User {
   final int id;
   final String login;
@@ -70,8 +89,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    double buttonHeight = 0.1015 * screenHeight;
+    double buttonHeight = getButtonHeight(context);
     double btnMargin = 20;
 
     return Positioned(
@@ -80,10 +98,10 @@ class AppButton extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints.tightFor(
             width: screenWidth - 2 * btnMargin, height: buttonHeight),
-        child: ElevatedButton.icon(
+        child: TextButton(
           onPressed: this.onPressed,
-          icon: Image.asset(this.imgPath,
-              height: 20, width: 20, color: Colors.white),
+          // icon: Image.asset(this.imgPath,
+          //     height: 20, width: 20, color: Colors.white),
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -93,7 +111,7 @@ class AppButton extends StatelessWidget {
               ),
             ),
           ),
-          label: Text(this.label),
+          child: Text(this.label, style: TextStyle(fontSize: getFontSize(context), color: Colors.white,)),
         ),
       ),
     );
@@ -120,6 +138,7 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double buttonHeight = getButtonHeight(context);
     return WillPopScope(
       onWillPop: () async {
         return;
@@ -129,8 +148,29 @@ class Menu extends StatelessWidget {
         body: Center(
           child: Stack(
             children: <Widget>[
+              Positioned(
+                top: 0.125*buttonHeight + statusBarHeight,
+                left: sideMargin,
+                child:Row(
+                  children: <Widget>[
+                    SizedBox(width: 0.25*buttonHeight, height: 0.25*buttonHeight),
+                    Image(image: AssetImage('./assets/icon/icon.png'), height: 0.75*buttonHeight, width: 0.75*buttonHeight),
+                    SizedBox(width: 0.125*buttonHeight, height: 0.125*buttonHeight),
+                    Text("Dziennik hodowlany", style: TextStyle(color: Colors.white, fontSize: 1.2 * getFontSize(context))),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 0.098 * getScreenHeight(context) + statusBarHeight,
+                left: sideMargin,
+                child: Container(
+                  height: 1.0,
+                  width: getScreenWidth(context) - 2 * sideMargin,
+                  color: buttonColor,
+                ),
+              ),
               AppButton(
-                top: 100,
+                top: 0.098 * getScreenHeight(context)+ statusBarHeight + 1,
                 label: "Moje konto",
                 imgPath: "./assets/img/icon1.png",
                 onPressed: () async {
@@ -140,8 +180,17 @@ class Menu extends StatelessWidget {
                   );
                 },
               ),
+              Positioned(
+                top: 0.198 * getScreenHeight(context) + statusBarHeight,
+                left: sideMargin,
+                child: Container(
+                  height: 1.0,
+                  width: getScreenWidth(context) - 2 * sideMargin,
+                  color: buttonColor,
+                ),
+              ),
               AppButton(
-                top: 200,
+                top: 0.303*getScreenHeight(context),
                 label: "Pomiary",
                 imgPath: "./assets/img/icon2.png",
                 onPressed: () async {
@@ -165,7 +214,7 @@ class Menu extends StatelessWidget {
                 },
               ),
               AppButton(
-                top: 500,
+                top: 0.864*getScreenHeight(context),
                 label: "Wyloguj",
                 imgPath: "./assets/img/icon5.png",
                 onPressed: () async {
