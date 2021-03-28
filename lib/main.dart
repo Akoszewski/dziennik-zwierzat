@@ -19,7 +19,7 @@ double getScreenWidth(BuildContext context) {
 }
 
 double getScreenHeight(BuildContext context) {
-  return MediaQuery.of(context).size.height;
+  return MediaQuery.of(context).size.height - statusBarHeight;
 }
 
 double getButtonHeight(BuildContext context) {
@@ -81,11 +81,12 @@ class MyApp extends StatelessWidget {
 }
 
 class AppButton extends StatelessWidget {
-  AppButton({this.label, this.top, this.imgPath, @required this.onPressed});
+  AppButton({this.label, this.color, this.top, this.imgPath, @required this.onPressed});
   final GestureTapCallback onPressed;
   final double top;
   final String imgPath;
   final String label;
+  final Color color;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -103,7 +104,7 @@ class AppButton extends StatelessWidget {
           // icon: Image.asset(this.imgPath,
           //     height: 20, width: 20, color: Colors.white),
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
+            backgroundColor: MaterialStateProperty.all<Color>(this.color),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -161,7 +162,7 @@ class Menu extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 0.098 * getScreenHeight(context) + statusBarHeight,
+                top: 1.125*buttonHeight + statusBarHeight,
                 left: sideMargin,
                 child: Container(
                   height: 1.0,
@@ -170,9 +171,10 @@ class Menu extends StatelessWidget {
                 ),
               ),
               AppButton(
-                top: 0.098 * getScreenHeight(context)+ statusBarHeight + 1,
+                top: 1.125*buttonHeight + statusBarHeight + 1,
                 label: "Moje konto",
                 imgPath: "./assets/img/icon1.png",
+                color: bgColor,
                 onPressed: () async {
                   Navigator.push(
                     context,
@@ -181,7 +183,7 @@ class Menu extends StatelessWidget {
                 },
               ),
               Positioned(
-                top: 0.198 * getScreenHeight(context) + statusBarHeight,
+                top: 2.125*buttonHeight + statusBarHeight + 1,
                 left: sideMargin,
                 child: Container(
                   height: 1.0,
@@ -189,26 +191,34 @@ class Menu extends StatelessWidget {
                   color: buttonColor,
                 ),
               ),
+              Positioned (
+                top: 2.6*buttonHeight + statusBarHeight + 1,
+                left: 30,
+                child: Text("skanuj QR & dodaj wpis", style: TextStyle(fontSize: getFontSize(context), color: Colors.white,)),
+              ),
               AppButton(
-                top: 0.303*getScreenHeight(context),
+                top: 3.125*buttonHeight + statusBarHeight + 1,
                 label: "Pomiary",
                 imgPath: "./assets/img/icon2.png",
+                color: buttonColor,
                 onPressed: () async {
                   await scanQr(context, "measurements");
                 },
               ),
               AppButton(
-                top: 300,
+                top: 4.125*buttonHeight + statusBarHeight + 21,
                 label: "Wylinki",
                 imgPath: "./assets/img/icon3.png",
+                color: buttonColor,
                 onPressed: () async {
                   await scanQr(context, "old-skins");
                 },
               ),
               AppButton(
-                top: 400,
+                top: 5.125*buttonHeight + statusBarHeight + 41,
                 label: "Karmienie",
                 imgPath: "./assets/img/icon4.png",
+                color: buttonColor,
                 onPressed: () async {
                   await scanQr(context, "old-skins");
                 },
@@ -217,6 +227,7 @@ class Menu extends StatelessWidget {
                 top: 0.864*getScreenHeight(context),
                 label: "Wyloguj",
                 imgPath: "./assets/img/icon5.png",
+                color: buttonColor,
                 onPressed: () async {
                   Phoenix.rebirth(context);
                 },
