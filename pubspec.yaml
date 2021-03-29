@@ -29,6 +29,7 @@ dependencies:
   path:
   flutter_barcode_scanner: ^1.0.2
   flutter_phoenix: "^1.0.0"
+  flutter_webview_plugin: ^0.3.11
 
 
   # The following adds the Cupertino Icons font to your application.

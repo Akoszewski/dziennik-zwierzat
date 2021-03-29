@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart' hide JavascriptChannel, JavascriptMessage;
 
 // Color bgColor = Color(0x373c42);
 // Color buttonColor = Color(0x4a4f55);
@@ -246,12 +247,22 @@ class Index extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: WebView(
-          initialUrl: url,
+
+    final flutterWebviewPlugin = new FlutterWebviewPlugin();
+    flutterWebviewPlugin.launch(url, hidden: false);
+
+    return WillPopScope(
+      onWillPop: () async {
+        flutterWebviewPlugin.close();
+        return true;
+      },
+      child: Scaffold(
+        body: Center(
+        // child: WebView(
+        //   initialUrl: url,
+        // ),
         ),
-      ),
+      )
     );
   }
 }
