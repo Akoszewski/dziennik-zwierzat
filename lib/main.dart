@@ -125,7 +125,7 @@ class Menu extends StatelessWidget {
         "#0000ff", "Anuluj", true, null);
     String urlToGo = "https://dziennikhodowlany.pl/admin/" +
         pagename +
-        "/old-skins/add?animal_id=" +
+        "/add?animal_id=" +
         barcodeScanRes +
         "&mobile_ver";
     if (barcodeScanRes != "-1") {
