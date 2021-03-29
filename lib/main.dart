@@ -251,18 +251,8 @@ class Index extends StatelessWidget {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
     flutterWebviewPlugin.launch(url, hidden: false);
 
-    return WillPopScope(
-      onWillPop: () async {
-        flutterWebviewPlugin.close();
-        return true;
-      },
-      child: Scaffold(
-        body: Center(
-        // child: WebView(
-        //   initialUrl: url,
-        // ),
-        ),
-      )
+    return WebviewScaffold(
+      url: url,
     );
   }
 }
