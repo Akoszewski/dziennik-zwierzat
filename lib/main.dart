@@ -221,7 +221,7 @@ class Menu extends StatelessWidget {
                 imgPath: "./assets/img/icon4.png",
                 color: buttonColor,
                 onPressed: () async {
-                  await scanQr(context, "old-skins");
+                  await scanQr(context, "feedings");
                 },
               ),
               AppButton(
@@ -249,7 +249,7 @@ class Index extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
-    flutterWebviewPlugin.launch(url, hidden: false);
+    //flutterWebviewPlugin.launch(url, hidden: false);
 
     return WebviewScaffold(
       url: url,
