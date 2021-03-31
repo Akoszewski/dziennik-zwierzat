@@ -247,12 +247,10 @@ class Index extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final flutterWebviewPlugin = new FlutterWebviewPlugin();
-    //flutterWebviewPlugin.launch(url, hidden: false);
-
-    return WebviewScaffold(
-      url: url,
+    return SafeArea(
+        child: WebviewScaffold(
+        url: url,
+      )
     );
   }
 }
