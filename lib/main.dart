@@ -7,13 +7,13 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart' hide JavascriptChannel, JavascriptMessage;
 
-// Color bgColor = Color(0x373c42);
-// Color buttonColor = Color(0x4a4f55);
-// Color logoutButtonColor = Color(0x3f424c);
+// Color bgColor = Color(0xFF373C42);
+Color bgColor = Color(0xFF353842);
+Color buttonColor = Color(0xFF4a4F55);
+Color logoutButtonColor = Color(0xFF3F424C);
 
-Color bgColor = Colors.grey[850];
-Color buttonColor = Colors.grey[700];
-Color logoutButtonColor = Color(0x3f424c);
+// Color bgColor = Color(0xFF343A40);
+// Color logoutButtonColor = Color(0x3F424C);
 
 double getScreenWidth(BuildContext context) {
   return MediaQuery.of(context).size.width;
@@ -228,7 +228,7 @@ class Menu extends StatelessWidget {
                 top: 0.864*getScreenHeight(context),
                 label: "Wyloguj",
                 imgPath: "./assets/img/icon5.png",
-                color: buttonColor,
+                color: logoutButtonColor,
                 onPressed: () async {
                   Phoenix.rebirth(context);
                 },
