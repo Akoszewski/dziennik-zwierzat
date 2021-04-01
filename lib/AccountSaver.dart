@@ -22,14 +22,28 @@ class Account {
 }
 
 class AccountSaver {
-  Future<Database> database;
-  Future<void> init() async {
+  AccountSaver._();
+  static final AccountSaver asv = AccountSaver._();
+
+  Database _database;
+  String _databaseName = 'account.db';
+  String _tableName = 'accounts';
+
+  Future<Database> _initDatabase() async {
     WidgetsFlutterBinding.ensureInitialized();
-    database = openDatabase(join(await getDatabasesPath(), 'account.db'),
-        onCreate: (db, version) {
+    return openDatabase(join(await getDatabasesPath(), _databaseName),
+        onCreate: (db, version) async {
       return db.execute(
-          "CREATE TABLE accounts(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
+          "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
     }, version: 1);
+  }
+
+  Future<Database> get database async {
+    if (_database != null) { 
+      return _database;
+    }
+    _database = await _initDatabase();
+    return _database;
   }
 
   Future<void> insertAccounts(Account account) async {
@@ -44,7 +58,7 @@ class AccountSaver {
 
   Future<List<Account>> accounts() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('accounts');
+    final List<Map<String, dynamic>> maps = await db.query(_tableName);
     return List.generate(maps.length, (i) {
       return Account(
         id: maps[i]['id'],
