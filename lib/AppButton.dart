@@ -27,11 +27,21 @@ class AppButton extends StatelessWidget {
             ),
           ),
         ),
-        child: Text(this.label,
-            style: TextStyle(
-              fontSize: getFontSize(context),
-              color: Colors.white,
-            )),
+        child: Container(
+          margin: EdgeInsets.only(left: 0.25 * getButtonHeight(context)),
+          child: Row(
+            children: <Widget>[
+              Image.asset(this.imgPath, height: 0.5 * getButtonHeight(context), width: 0.5 * getButtonHeight(context)),
+              SizedBox(width: 0.25 * getButtonHeight(context), height: double.infinity),
+              Text(this.label,
+                style: TextStyle(
+                  fontSize: getFontSize(context),
+                  color: Colors.white,
+                )
+              ),
+            ]
+          ),
+        ),
       ),
     );
   }
