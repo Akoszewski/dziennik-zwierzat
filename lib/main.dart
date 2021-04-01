@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 
-import 'User.dart';
+import 'AccountSaver.dart';
 import 'Values.dart';
 import 'Menu.dart';
 
-// Color bgColor = Color(0xFF373C42);
-
-// Color bgColor = Color(0xFF343A40);
-// Color logoutButtonColor = Color(0x3F424C);
-
-Future<Database> database;
+AccountSaver accountSaver;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  database = openDatabase(join(await getDatabasesPath(), 'user.db'),
-      onCreate: (db, version) {
-    return db.execute(
-        "CREATE TABLE users(id INTEGER PRIMARY KEY, login TEXT, pass TEXT)");
-  }, version: 1);
+  accountSaver = AccountSaver();
+  await accountSaver.init();
   runApp(Phoenix(child: MyApp()));
 }
 
@@ -30,26 +19,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Communication Bridge',
+      title: 'Dziennik Hodowlany',
       theme: ThemeData(
-          // primaryColor: buttonColor,
-          // primarySwatch: buttonColor,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: MyHomePage(title: 'Native - JS Communication Bridge'),
+      home: LoginPage(title: 'Login page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  LoginPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LoginPageState extends State<LoginPage> {
   WebViewController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -64,20 +51,11 @@ class _MyHomePageState extends State<MyHomePage> {
             JavascriptChannel(
                 name: 'messageHandler',
                 onMessageReceived: (JavascriptMessage message) async {
-                  Future<void> insertUser(User user) async {
-                    final Database db = await database;
-                    await db.insert(
-                      'users',
-                      user.toMap(),
-                      conflictAlgorithm: ConflictAlgorithm.replace,
-                    );
-                  }
-
                   print(message.message);
                   var credentials = message.message.split(";");
                   print("Credentials: " + credentials.toString());
-                  await insertUser(
-                      User(id: 0, login: credentials[0], pass: credentials[1]));
+                  await accountSaver.insertAccounts(
+                      Account(id: 0, login: credentials[0], pass: credentials[1]));
                 })
           ]),
           onWebViewCreated: (WebViewController webviewController) {
@@ -85,19 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           onPageFinished: (String url) async {
             if (url == loginUrl) {
-              Future<List<User>> users() async {
-                final Database db = await database;
-                final List<Map<String, dynamic>> maps = await db.query('users');
-                return List.generate(maps.length, (i) {
-                  return User(
-                    id: maps[i]['id'],
-                    login: maps[i]['login'],
-                    pass: maps[i]['pass'],
-                  );
-                });
-              }
-
-              var userList = await users();
+              var userList = await accountSaver.accounts();
               String login = "";
               String pass = "";
               if (userList.length > 0) {

@@ -17,8 +17,6 @@ class AppButton extends StatelessWidget {
       height: buttonHeight,
       child: TextButton(
         onPressed: this.onPressed,
-        // icon: Image.asset(this.imgPath,
-        //     height: 20, width: 20, color: Colors.white),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(this.color),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(

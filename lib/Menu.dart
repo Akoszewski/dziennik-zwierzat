@@ -4,7 +4,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'AppButton.dart';
 import 'Colors.dart';
-import 'Index.dart';
+import 'WebPage.dart';
 import 'Underline.dart';
 import 'Values.dart';
 
@@ -21,7 +21,7 @@ class Menu extends StatelessWidget {
       print("Scanning result: " + barcodeScanRes);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Index(urlToGo)),
+        MaterialPageRoute(builder: (context) => WebPage(urlToGo)),
       );
     }
   }
@@ -75,7 +75,7 @@ class Menu extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Index(indexUrl)),
+                              builder: (context) => WebPage(indexUrl)),
                         );
                       },
                     ),
